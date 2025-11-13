@@ -125,7 +125,11 @@
                 <tr>
                     <td><%= img.getId() %></td>
                     <td>    
+                        <% if (img.getNombreFichero() != null && !img.getNombreFichero().isEmpty()) { %>
+                        <a href="#" onclick="window.open('http://localhost:8080/p4Rest/uploads/<%= img.getNombreFichero() %>', '_blank', 'width = 600, height = 400'); return false;">Ver foto</a>
+                        <% } else { %>
                         Sin imagen
+                        <% } %>
                     </td>
                     <td><%= img.getTitulo() %></td>
                     <td><%= img.getDescripcion() %></td>

@@ -14,6 +14,16 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import jakarta.servlet.http.Part;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 
 /**
  * Clase que realiza llamadas REST al servicio de imágenes
@@ -25,7 +35,7 @@ public class operacionesREST {
     private HttpURLConnection conn;
     private URL url;
 
-    private static final String URL_API = "http://localhost:8080/RestAD/resources/jakartaee9";
+    private static final String URL_API = "http://localhost:8080/p4Rest/resources/jakartaee9";
 
     // MÉTODOS APERTURA Y CIERRE CONEXIÓN
     private void abrirConexion(String servicio) throws Exception {
@@ -131,7 +141,9 @@ public class operacionesREST {
     }
 
     //METODO DE SUBIDA
-    public int registrarImagen(Imagen img) {
+    
+// Opcion sin subida de fichero (para compatibilizar practicas de otros grupos)
+    public int registrarImagenDatos(Imagen img) {
         try {
             String parametros = "title=" + URLEncoder.encode(img.getTitulo(), "UTF-8")
                     + "&description=" + URLEncoder.encode(img.getDescripcion(), "UTF-8")
@@ -141,12 +153,49 @@ public class operacionesREST {
                     + "&capture=" + URLEncoder.encode(img.getFechaCreacion(), "UTF-8");
 
             return peticionPOST("register", parametros);
-
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return -1;
         }
     }
+
+// Opción 2: Registrar con archivo (subida de BD + fichero
+    public int registrarImagenFichero(Imagen img, Part filePart) {
+        try {
+            final Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
+
+            String fileName = img.getNombreFichero();
+
+            StreamDataBodyPart fileBodyPart = new StreamDataBodyPart("file", filePart.getInputStream());
+            fileBodyPart.setFilename(fileName);
+
+            FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
+            final FormDataMultiPart multipart = (FormDataMultiPart) formDataMultiPart
+                    .field("title", img.getTitulo(), MediaType.TEXT_PLAIN_TYPE)
+                    .field("description", img.getDescripcion(), MediaType.TEXT_PLAIN_TYPE)
+                    .field("keywords", img.getKeywords(), MediaType.TEXT_PLAIN_TYPE)
+                    .field("author", img.getAutor(), MediaType.TEXT_PLAIN_TYPE)
+                    .field("creator", img.getCreador(), MediaType.TEXT_PLAIN_TYPE)
+                    .field("capture", img.getFechaCreacion(), MediaType.TEXT_PLAIN_TYPE)
+                    .field("filename", fileName, MediaType.TEXT_PLAIN_TYPE)
+                    .bodyPart(fileBodyPart);
+
+            final WebTarget target = client.target(URL_API + "/registerImageFile");
+            final Response response = target.request().post(Entity.entity(multipart, multipart.getMediaType()));
+
+            int status = response.getStatus();
+
+            formDataMultiPart.close();
+            multipart.close();
+            client.close();
+
+            return status;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
 
     //METODO DE MODIFICACIÓN
     public int modificarImagen(Imagen img) {

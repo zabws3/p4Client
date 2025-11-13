@@ -99,7 +99,7 @@
 
                 <div class="titulo"><%= img.getTitulo() %></div>
 
-                <img src="<%= request.getContextPath() %>/uploads/<%= img.getNombreFichero() %>" alt="Imagen"/>
+                <img src="http://localhost:8080/p4Rest/uploads/<%= img.getNombreFichero() %>" alt="Imagen"/>
                 <br><br>
                 <button type="submit">Eliminar Imagen</button>
             </form>

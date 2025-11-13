@@ -76,23 +76,13 @@ public class registrarImagen extends HttpServlet {
             //Creación nombre con timestamp
             long timestamp = System.currentTimeMillis();
             String fileNameUnico = timestamp + "_" + creador + "_" + fileName;
-/*
-            //Guardamos archivo en el servidor
-            File fileGuardar = new File(directorio, fileNameUnico);
 
-            try (InputStream input = filePart.getInputStream(); FileOutputStream output = new FileOutputStream(fileGuardar)) {
-                byte[] buffer = new byte[1024];
-                int bytesRead = -1;
-                while ((bytesRead = input.read(buffer)) != -1) {
-                    output.write(buffer, 0, bytesRead);
-                }
-            }
-*/
             // Preparar datos para base de datos
             operacionesREST op = new operacionesREST();
             
             Imagen imagen = new Imagen(titulo, descripcion, palabrasClave, autor, creador, fechaCreacion, null, fileNameUnico);
-            int registrado = op.registrarImagen(imagen,filePart);
+            int registrado=op.registrarImagenFichero(imagen, filePart);
+
             
 
             if (registrado == 200) {
