@@ -1,5 +1,5 @@
 <!-- JSP: login.jsp -->
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>   
 <!DOCTYPE html>
 <html>
     <head>
@@ -63,6 +63,11 @@
                 <input type="text" id="usuario" name="usuario" required />
                 <label for="password">Contraseña:</label>
                 <input type="password" id="password" name="password" required />
+                <label for="apiOption">Selecciona la API:</label>
+                <select id="apiOption" name="apiOption" required>
+                    <option value="1" <%= "1".equals(session.getAttribute("apiOption")) ? "selected" : "" %>>API Wences</option>
+                    <option value="0" <%= "0".equals(session.getAttribute("apiOption")) ? "selected" : "" %>>API Juan</option>
+                </select>
                 <button type="submit" class="btn">Entrar</button>
             </form>
         </div>

@@ -35,8 +35,16 @@ public class operacionesREST {
     private HttpURLConnection conn;
     private URL url;
 
-    private static final String URL_API = "http://localhost:8080/p4Rest/resources/jakartaee9";
+    private static String URL_API = "http://localhost:8080/p4Rest/resources/jakartaee9";
 
+    public static void cambiarAPI(int opcion){
+        if(opcion == 0){
+            URL_API = "http://192.168.122.76:8080/RestAD/resources/images";
+        }else{
+            URL_API = "http://localhost:8080/p4Rest/resources/jakartaee9";
+        }
+    }
+    
     // MÉTODOS APERTURA Y CIERRE CONEXIÓN
     private void abrirConexion(String servicio) throws Exception {
         url = new URL(URL_API + "/" + servicio);

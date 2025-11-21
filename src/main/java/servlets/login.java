@@ -19,29 +19,36 @@ public class login extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            response.sendRedirect("login.jsp");
+        response.sendRedirect("login.jsp");
 
     }
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String usuario = request.getParameter("usuario");
         String password = request.getParameter("password");
+        String apiOptionStr = request.getParameter("apiOption");
 
         response.setContentType("text/html;charset=UTF-8");
-            
-            operacionesREST op = new operacionesREST();
-            int respuesta =  op.validarUsuario(usuario,password);
-            
-            if (respuesta == 200) {
-                HttpSession session = request.getSession();
-                session.setAttribute("usuario", usuario);
-                response.sendRedirect("menu.jsp");
-            } else {
-                response.sendRedirect("error?from=login.jsp");
-            }
+
+        if (apiOptionStr != null) {
+            int apiOption = Integer.parseInt(apiOptionStr);
+            operacionesREST.cambiarAPI(apiOption);
+            HttpSession session = request.getSession();
+            //session.setAttribute("apiOption", apiOptionStr);
+        }
+
+        operacionesREST op = new operacionesREST();
+        int respuesta = op.validarUsuario(usuario, password);
+
+        if (respuesta == 200) {
+            HttpSession session = request.getSession();
+            session.setAttribute("usuario", usuario);
+            response.sendRedirect("menu.jsp");
+        } else {
+            response.sendRedirect("error?from=login.jsp");
+        }
     }
 
 }

@@ -7,6 +7,9 @@
         return; //Para parar la ejecución del jsp (Sino posible error 500)
     }
 %>
+
+
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -67,13 +70,14 @@
     <body>
         <div class="container">
             <h2>Bienvenid@, <%= usuario %></h2>
-            <ul class="menu-list">
-                <li><a href="registrarImagen.jsp">Registrar Imagen</a></li>
-                <li><a href="buscarImagen.jsp">Buscar Imagen</a></li>
-            </ul>
-            <div class="logout">
-                <a href="logout">Cerrar sesión</a>
-            </div>
+            <form method="post" action="menu.jsp">
+                <ul class="menu-list">
+                    <li><a href="registrarImagen.jsp">Registrar Imagen</a></li>
+                    <li><a href="buscarImagen.jsp">Buscar Imagen</a></li>
+                </ul>
+                <div class="logout">
+                    <a href="logout">Cerrar sesión</a>
+                </div>
         </div>
     </body>
 </html>
